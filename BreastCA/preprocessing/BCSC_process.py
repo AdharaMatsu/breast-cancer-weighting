@@ -15,7 +15,7 @@ for e in names:  # Crear una lista de tuplas con nombres y nombres de archivos
     temp1 = e.split('-')
     temp = (temp1[0], e)
     filenames.append(temp)
-# 0 -> BCSC LPNP-risk_factors_summarized-LPNP.csv
+# 0 -> BCSC-risk_factors.csv
 # 3 -> BCSC LPP-risk_factors-LPP.csv
 file = 3
 dataset_name = filenames[file][0]  # Nombre del dataset

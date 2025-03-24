@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 import time
 
-#from fontTools.ttx import process
-
 def equal_file(filename):
     dataset_generated = pd.read_csv(filename)
 
@@ -52,7 +50,8 @@ def check_for_ID():
 
 start_time = time.time()
 
-dataset_original = "Datasets/BCSC LPNP-risk_factors_summarized-LPNP.csv"
+dataset_original = "Datasets/BCSC-risk_factors.csv"
+# version del proyecto anterior
 dataset_process = 'Last Project/HarmonyForBreastCancer/BCSC_risk_factors_153821.csv'
 
 df_processed = pd.read_csv(dataset_process)
