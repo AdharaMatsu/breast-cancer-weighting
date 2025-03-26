@@ -47,17 +47,6 @@ def check_for_ID():
         it = it + 1
     df_nuevo = pd.DataFrame(new_data, columns=original_header)
     df_nuevo.to_csv('Datasets/BCSC-dataset_153821_0325.csv', index=False)
-
-start_time = time.time()
-
-dataset_original = "Datasets/BCSC-risk_factors.csv"
-# version del proyecto anterior
-dataset_process = 'Last Project/HarmonyForBreastCancer/BCSC_risk_factors_153821.csv'
-
-df_processed = pd.read_csv(dataset_process)
-df_original = pd.read_csv(dataset_original)
-
-
 def check_counter(df, dfB, df_process): # checar ID numero de veces que se repite
     lista = []
     for i in range(len(df_process)):
@@ -69,6 +58,17 @@ def check_counter(df, dfB, df_process): # checar ID numero de veces que se repit
             lista.append(conteo)
         elif not conteo in lista:
             lista.append(conteo)
+start_time = time.time()
+
+dataset_original = "Datasets/BCSC-risk_factors.csv"
+# version del proyecto anterior
+dataset_process = 'Last Project/HarmonyForBreastCancer/BCSC_risk_factors_153821.csv'
+
+df_processed = pd.read_csv(dataset_process)
+df_original = pd.read_csv(dataset_original)
+
+
+
 
 
 # check_duplicates(processed_header[0])

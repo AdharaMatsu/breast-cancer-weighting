@@ -1,20 +1,42 @@
-from files import dataset_original, dataset_process
 
 import pandas as pd
+import random
 
-df = pd.read_csv(dataset_process)
-#num_filas = df.shape[0]  # numero de filas
-#print(f"El CSV tiene {num_filas} filas.")
-#print(df.iloc[0].to_numpy()) # datos por fila
+def risk_factors(df, attr_header): #Asigna randoms
+    list_attr = []
+    for column in attr_header:
+        dic_aux = {}
+        unique_values = df[column].unique()
+        for values in unique_values:
+            rnd_value = random.randint(5, 16)
+            dic_aux[int(values)] = rnd_value
+        list_attr.append(dic_aux)
 
-#for column in df.columns[1:]:
-#       repetead_values = df[column].value_counts()
-#        print(f"\nValores repetidos en '{column}':")
-#        print(repetead_values)
-valores_unicos = df['age_group_5_years'].unique()
-print(valores_unicos)
-#        repetead_values = repetead_values[repetead_values > 1]  # Filtrar solo valores repetidos
+    return list_attr
 
-        #if not repetead_values.empty:
-        #    print(f"\nValores repetidos en '{column}':")
-        #    print(repetead_values)
+def transpose_with_dict(df, dict, filename): # Asigna valores a dataset
+    for i in range(len(df)):
+        row = df.iloc[i].tolist()
+        aux = 0
+        for e in range(1,len(row)):
+            searching_item = dict[aux].get(row[e], None)
+            row[e] = searching_item
+            aux = aux + 1
+        df.iloc[i] = row
+
+    df_process.to_csv(filename, index=False)
+
+if __name__ == "__main__":
+    dataset_original = "Datasets/BCSC-risk_factors.csv"
+    dataset_last_version = 'Last Project/HarmonyForBreastCancer/BCSC_risk_factors_153821.csv'
+    dataset_process = 'Datasets/BCSC-dataset_153821_0325.csv'
+
+    df_process = pd.read_csv(dataset_process)
+    ids = df_process['year']
+    df_process.drop('year',axis=1)
+    header = df_process.columns
+
+    #random.seed(10)
+    dic_attributes = risk_factors(df_process,header)
+    transpose_with_dict(df_process,dic_attributes, 'GRASP_Test.csv')
+    
