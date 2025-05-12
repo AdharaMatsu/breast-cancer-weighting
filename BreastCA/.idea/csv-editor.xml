@@ -17,6 +17,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/Datasets/BCSC-risk_factors.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Datasets/Wisconsin-data.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/GRASP_Test.csv">
           <value>
             <Attribute>
@@ -31,7 +45,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/Last Project/HarmonyForBreastCancer/CRV2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/Last Project/HarmonyForBreastCancer/Soluciones optimasv2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Last Project/HarmonyForBreastCancer/df.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
