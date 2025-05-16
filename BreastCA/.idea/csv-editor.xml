@@ -66,6 +66,41 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/Last Project/Matriz_confusion/Diagnostico original - gail.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Last Project/Sumatoria_dataoriginal/datos dfFalse_conSumatoria.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Last Project/Sumatoria_dataoriginal/datos dfTrue_conSumatoria.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Last Project/Sumatoria_dataoriginal/dfFalse.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Last Project/Sumatoria_dataoriginal/dfTrue.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
