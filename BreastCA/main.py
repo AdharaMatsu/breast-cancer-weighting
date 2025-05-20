@@ -98,20 +98,30 @@ if __name__ == "__main__":
     random_test = convert_keys_to_int(test_result['parametros'])
     correlacion_anterior = test_result['correlacion']
 
-    rnd_probability = random.randint(1, 11)
 
     for attribute, value_dict in random_test.items():
         for subclave, subvalor in value_dict.items():
-            if random.randint(1, 100) <= 50:
-                value_dict[subclave] = subvalor + 2
-            else:
-                value_dict[subclave] = subvalor - 2
+            add1 = random.randint(1, 5)
+            add2 = random.randint(1, 5)
+            while add1 == add2:
+                add2 = random.randint(1, 5)
+
+            value_dict[subclave] = subvalor + add1
+            #Evaluar la solución
+            value_dict[subclave] = subvalor + add2
+            #Evaluar la solución
+            value_dict[subclave] = subvalor - add1
+            #Evaluar la solución
+            value_dict[subclave] = subvalor - add2
+            #Evaluar la solución
+            #nos quedamos con el mejor de los 4 y avanzamos a la siguiente subclave
 
 
     df_replaced = replace_values(df_process,random_test)
     df_replaced = add_column(df_replaced)
     nueva_correlacion = FO(df_replaced)
-    print(nueva_correlacion)
+    print('Correlacion anterior: ', correlacion_anterior, ' nueva: ',nueva_correlacion)
+    print('Dif. ', (correlacion_anterior-nueva_correlacion))
 
 
 
