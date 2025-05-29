@@ -1,14 +1,9 @@
 import pandas as pd
 import random
-import json
-import os
-
-from funtions import print_dictToDict
-
 
 def random_risk_factors(df, attributes_header):
     random_weighing = {}
-    for attribute in attributes_header[:-1]:  # Sin count
+    for attribute in attributes_header[:-1]:
         key = attribute
         dic_aux = {}
         unique_values = df[attribute].unique()
@@ -20,51 +15,37 @@ def random_risk_factors(df, attributes_header):
 
     return random_weighing
 
-
 def replace_values(df, replacements):
     df_processed = df.copy()
 
     for column, random_dict in replacements.items():
         replacement_series = df_processed[column].map(random_dict)
 #        df_processed[column] = pd.DataFrame(replacement_series)
-        df_processed[column] = replacement_series.combine_first(df_processed[column])  # Reemplaza solo valores existentes en el diccionario
+        df_processed[column] = replacement_series.combine_first(df_processed[column])
     return df_processed
 
 def add_column(df_processed):
-    df_processed['suma'] = df_processed.iloc[:, 1:-1].sum(axis=1)
+    df_processed['sum'] = df_processed.iloc[:, 1:-1].sum(axis=1)
     return df_processed
 
-def FO(df_processed):
-    return df_processed['count'].corr(df_processed['suma'])
+def objective_function(df_processed):
+    return df_processed['count'].corr(df_processed['sum'])
 
-def write_json(filename, df_processed):
-    with open(filename,'w') as f:
-        json.dump(df_processed,f,indent=5)
+def best_results(results, times):
+    best_tests = {}
 
-def create_json(filename, df_procesed):
-    if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            json_results = json.load(f)
-            join_results = {**df_procesed, **json_results}
-            join_results = dict(sorted(join_results.items(), key=lambda x: x[1]['correlacion'], reverse=True)[:5])
-        #write_json(filename, join_results)
-        return json_results
+    for _ in range(times):
+        best_test_key = max(results, key=lambda test_name: results[test_name]['correlation'])
+        best_tests[best_test_key] = results.pop(best_test_key)
 
-    else:
-        df_procesed = dict(sorted(df_procesed.items(), key=lambda x: x[1]['correlacion'], reverse=True)[:5])
-        #write_json(file, df_procesed)
-        return df_procesed
+    return best_tests
 
-def convert_keys_to_int(d):
-    new_dict = {}
-    for k, v in d.items():
-        if isinstance(v, dict):
-            # Convierte claves del subdiccionario a int
-            new_dict[k] = {int(sub_k): sub_v for sub_k, sub_v in v.items()}
-        else:
-            new_dict[k] = v
-    return new_dict
+def evaluation(df, replacements):
+    df_replacements = replace_values(df,replacements)
+    df_replacements = add_column(df_replacements)
+    new_correlation = objective_function(df_replacements)
 
+    return new_correlation, df_replacements
 
 if __name__ == "__main__":
     dataset_original = "Datasets/BCSC-risk_factors.csv"
@@ -77,51 +58,41 @@ if __name__ == "__main__":
     ids = df_process['id']
     df_process.drop('id', axis=1, inplace=True)
     header = df_process.columns
-    results = {}
 
     random.seed(10)
-    for e in range(10):
-        random_replacements = random_risk_factors(df_process, header)
-        df_replaced = replace_values(df_process, random_replacements)
-        df_replaced = add_column(df_replaced)
-        nueva_correlacion = FO(df_replaced)
+    results_random_test = {}
 
-        key_name = 'random test ' + str(e+1)
-        results[key_name] = {
-            'parametros': random_replacements,
-            'correlacion': nueva_correlacion
+    for repeat_count in range(10):
+        random_replacements = random_risk_factors(df_process,header)
+        correlation = evaluation(df_process, random_replacements)
+
+        key_name = 'random test ' + str(repeat_count + 1)
+        results_random_test[key_name] = {
+            'parameters': random_replacements,
+            'correlation': correlation
         }
-    best_random_results = create_json(file, results)
 
-    # toma el diccionario
-    test_result = best_random_results['random test 9']
-    random_test = convert_keys_to_int(test_result['parametros'])
-    correlacion_anterior = test_result['correlacion']
+    best_random_results = best_results(results_random_test,5)
 
+    # random test 10, 5, 3, 7, 6
+    test_result = best_random_results['random test 10']
+    random_test = test_result['parameters']
+    previous_correlation = test_result['correlation']
 
-    for attribute, value_dict in random_test.items():
-        for subclave, subvalor in value_dict.items():
-            add1 = random.randint(1, 5)
-            add2 = random.randint(1, 5)
-            while add1 == add2:
-                add2 = random.randint(1, 5)
+    for _, random_replace in random_test.items():
+        for attribute, values in random_replace.items():
+            random_A = random.randint(1, 6)
+            random_B = random.randint(1, 6)
+            while random_A == random_B:
+                random_B = random.randint(1, 6)
 
-            value_dict[subclave] = subvalor + add1
-            #Evaluar la solución
-            value_dict[subclave] = subvalor + add2
-            #Evaluar la solución
-            value_dict[subclave] = subvalor - add1
-            #Evaluar la solución
-            value_dict[subclave] = subvalor - add2
-            #Evaluar la solución
-            #nos quedamos con el mejor de los 4 y avanzamos a la siguiente subclave
+            random_replace[attribute] = values + random_A
+            
 
 
-    df_replaced = replace_values(df_process,random_test)
-    df_replaced = add_column(df_replaced)
-    nueva_correlacion = FO(df_replaced)
-    print('Correlacion anterior: ', correlacion_anterior, ' nueva: ',nueva_correlacion)
-    print('Dif. ', (correlacion_anterior-nueva_correlacion))
+
+
+
 
 
 
