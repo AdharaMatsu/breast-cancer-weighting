@@ -1,5 +1,9 @@
 import pandas as pd
 import random
+import copy
+
+from funtions import print_dictToDict
+
 
 def random_risk_factors(df, attributes_header):
     random_weighing = {}
@@ -31,6 +35,15 @@ def add_column(df_processed):
 def objective_function(df_processed):
     return df_processed['count'].corr(df_processed['sum'])
 
+def get_sample(df, size_sample):
+    sample_A = df[df['count'] == 0].sample(n=size_sample, random_state=42)
+    sample_B = df[df['count'] == 1].sample(n=size_sample, random_state=42)
+
+    # opcional: mezclar
+    sample = pd.concat([sample_A, sample_B]).sample(frac=1, random_state=42)
+
+    return sample
+
 def best_results(results, times):
     best_tests = {}
 
@@ -45,7 +58,7 @@ def evaluation(df, replacements):
     df_replacements = add_column(df_replacements)
     new_correlation = objective_function(df_replacements)
 
-    return new_correlation, df_replacements
+    return new_correlation
 
 if __name__ == "__main__":
     dataset_original = "Datasets/BCSC-risk_factors.csv"
@@ -79,15 +92,43 @@ if __name__ == "__main__":
     random_test = test_result['parameters']
     previous_correlation = test_result['correlation']
 
-    for _, random_replace in random_test.items():
-        for attribute, values in random_replace.items():
-            random_A = random.randint(1, 6)
-            random_B = random.randint(1, 6)
-            while random_A == random_B:
-                random_B = random.randint(1, 6)
+    df_process_sample = get_sample(df_process, 200)
 
-            random_replace[attribute] = values + random_A
-            
+    results = {}
+
+    for attribute, value_dict in random_test.items():
+        for subclave, subvalor in value_dict.items():
+            add1 = random.randint(1, 5)
+            add2 = random.randint(1, 5)
+            while add1 == add2:
+                add2 = random.randint(1, 5)
+
+            cambios = [add1, add2, -add1, -add2]
+            candidatos = []
+
+            for cambio in cambios:
+                nueva_config = copy.deepcopy(random_test)
+                nueva_config[attribute][subclave] = subvalor + cambio
+
+                score = evaluation(df_process_sample, nueva_config)
+
+                test_name = f"{cambio}"
+                resultados = {
+                    'correlation': score,
+                    'replacements': copy.deepcopy(nueva_config)
+                }
+
+                results[test_name] = resultados
+                candidatos.append((score, cambio, nueva_config))
+
+            # Elegir el mejor de los 4 y aplicar al random_test actual
+            mejor_score, mejor_cambio, mejor_config = max(candidatos, key=lambda x: x[0])
+            random_test[attribute][subclave] = subvalor + mejor_cambio
+    top_tests = best_results(results, times=1)
+    print_dictToDict(top_tests)
+
+
+
 
 
 
