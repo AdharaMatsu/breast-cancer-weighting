@@ -123,9 +123,10 @@ if __name__ == "__main__":
 
             # Elegir el mejor de los 4 y aplicar al random_test actual
             mejor_score, mejor_cambio, mejor_config = max(candidatos, key=lambda x: x[0])
+            #condicional si cambia o no sólo para mejorar
             random_test[attribute][subclave] = subvalor + mejor_cambio
     top_tests = best_results(results, times=1)
-    print_dictToDict(top_tests)
+
 
 
 
